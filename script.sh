@@ -1,13 +1,11 @@
-FROM alpine:3.20
-
-ENV REVIEWDOG_VERSION=v0.20.2
+REVIEWDOG_VERSION=v0.20.2
 
 # hadolint ignore=DL3006
-RUN apk --no-cache add git curl jq python3 gcompat
+apt install git curl jq
 
-ENV SHELLCHEK_VERSION=v0.10.0
+SHELLCHEK_VERSION=v0.10.0
 
-RUN set -x; \
+set -x; \
   arch="$(uname -m)"; \
   echo "arch is $arch"; \
   if [ "${arch}" = 'armv7l' ]; then \
@@ -20,9 +18,9 @@ RUN set -x; \
   rm -rf "shellcheck-${SHELLCHEK_VERSION}"; \
   ls -laF /bin/shellcheck
 
-RUN wget -O - -q https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh| sh -s -- -b /usr/local/bin/ ${REVIEWDOG_VERSION}
+wget -O - -q https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh| sh -s -- -b /usr/local/bin/ ${REVIEWDOG_VERSION}
 
-COPY install-octoscan.sh /install-octoscan.sh
+
 
 RUN sh /install-octoscan.sh && rm /install-octoscan.sh
 
