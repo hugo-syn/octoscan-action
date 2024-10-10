@@ -48,6 +48,10 @@ fi
 # Print the constructed command for debugging
 echo "Constructed command: $COMMAND"
 
+ls -asl && find
+
+./octoscan scan ./
+
 # Execute the command
 sh -c "$COMMAND" | reviewdog -efm="%f:%l:%c: %m" \
       -name="octoscan" \
@@ -56,6 +60,8 @@ sh -c "$COMMAND" | reviewdog -efm="%f:%l:%c: %m" \
       -fail-on-error="${INPUT_FAIL_ON_ERROR}" \
       -level="${INPUT_LEVEL}" \
       ${INPUT_REVIEWDOG_FLAGS}
+
+echo "done"
 
 exit_code=$?
 
