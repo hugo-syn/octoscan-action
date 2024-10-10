@@ -48,6 +48,10 @@ fi
 # Print the constructed command for debugging
 echo "Constructed command: $COMMAND"
 
+which octoscan
+
+ls -asl /usr/local/bin/octoscan
+
 # Execute the command
 sh -c "$COMMAND" | reviewdog -efm="%f:%l:%c: %m" \
       -name="octoscan" \
