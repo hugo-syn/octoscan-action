@@ -52,6 +52,8 @@ which octoscan
 
 ls -asl /usr/local/bin/octoscan
 
+env
+
 # Execute the command
 sh -c "$COMMAND" | reviewdog -efm="%f:%l:%c: %m" \
       -name="octoscan" \
