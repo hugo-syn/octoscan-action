@@ -53,7 +53,7 @@ echo "Constructed command: $COMMAND"
 octoscan scan . | reviewdog -efm="%f:%l:%c: %m"
 
 # Execute the command
-sh -c "$COMMAND" | reviewdog -efm="%f:%l:%c: %m" \
+eval "$COMMAND" | reviewdog -efm="%f:%l:%c: %m" \
       -name="octoscan" \
       -reporter="${INPUT_REPORTER}" \
       -filter-mode="${INPUT_FILTER_MODE}" \
