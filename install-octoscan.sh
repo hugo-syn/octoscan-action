@@ -5,6 +5,7 @@ OCTOSCAN_ASSET_URL=$(curl -sS https://api.github.com/repos/synacktiv/octoscan/re
 echo $OCTOSCAN_ASSET_URL
 curl -sSL "$OCTOSCAN_ASSET_URL" -o ./octoscan
 ls -asl ./octoscan
-file ./octoscan
 chmod +x ./octoscan
 cp ./octoscan /usr/local/bin/
+
+ls -asl /usr/local/bin/octoscan
