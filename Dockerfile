@@ -3,7 +3,7 @@ FROM alpine:3.20
 ENV REVIEWDOG_VERSION=v0.20.2
 
 # hadolint ignore=DL3006
-RUN apk --no-cache add git curl jq gcompat
+RUN apk --no-cache add git curl jq gcompat python3
 
 ENV SHELLCHEK_VERSION=v0.10.0
 
