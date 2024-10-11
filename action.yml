@@ -13,13 +13,13 @@ inputs:
     description: 'Report level for reviewdog [info,warning,error]'
     default: 'error'
   reporter:
-    description: 'Reporter of reviewdog command [github-pr-check,github-pr-review].'
+    description: 'Reporter of reviewdog command [github-pr-check,github-pr-review,github-pr-annotations,github-check].'
     default: 'github-check'
   filter_mode:
     description: |
       Filtering mode for the reviewdog command [added,diff_context,file,nofilter].
       Default is added.
-    default: 'added'
+    default: 'file'
   fail_on_error:
     description: |
       Exit code for reviewdog when errors are found [true,false]
