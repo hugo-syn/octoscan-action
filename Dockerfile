@@ -1,4 +1,4 @@
-FROM FROM ghcr.io/0x41gilecat/octoscan:master
+FROM ghcr.io/0x41gilecat/octoscan:master
 
 COPY entrypoint.sh /entrypoint.sh
 
