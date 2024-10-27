@@ -46,11 +46,12 @@ fi
 
 OCTOSCAN_COMMAND="$OCTOSCAN_COMMAND > $SARIF_OUTPUT"
 
+echo "bla"
+
 # Print the constructed command for debugging
 echo "Octoscan command: $OCTOSCAN_COMMAND"
 
 # Execute the commands
-# I use eval because I don't know how to manage arguments that have space in them like for reviewdogs: reviewdogs_flags='--diff="git diff HEAD^"'
 eval "$OCTOSCAN_COMMAND"
 
 exit_code=$?
