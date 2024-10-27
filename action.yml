@@ -44,7 +44,10 @@ inputs:
     description: 'Disable specific rules. Split on ","'
   enable_rules:
     description: 'Enable specific rules, this will disable all other rules. Split on ","'
-  
+
+outputs:
+  sarif_output:
+    description: 'The name of the file containing the sarif output.'
 
 runs:
   using: 'docker'
