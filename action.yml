@@ -1,33 +1,15 @@
-name: 'Run octoscan with reviewdog'
-description: '🐶 Run octoscan with reviewdog on push / pull requests to improve code review experience.'
+name: 'Run octoscan'
+description: 'Run octoscan.'
 author: '@hugow'
 inputs:
-  github_token:
-    description: 'GITHUB_TOKEN'
-    default: '${{ github.token }}'
   workdir:
     description: 'Working directory relative to the root directory.'
     default: '.'
-  ### Flags for reviewdog ###
-  level:
-    description: 'Report level for reviewdog [info,warning,error]'
-    default: 'error'
-  reporter:
-    description: 'Reporter of reviewdog command [github-pr-check,github-pr-review,github-pr-annotations,github-check].'
-    default: 'github-check'
-  filter_mode:
-    description: |
-      Filtering mode for the reviewdog command [added,diff_context,file,nofilter].
-      Default is added.
-    default: 'file'
   fail_on_error:
     description: |
       Exit code for reviewdog when errors are found [true,false]
       Default is `false`.
     default: 'false'
-  reviewdog_flags:
-    description: 'Additional reviewdog flags'
-    default: ''
 
   ### Flags for octoscan ###
   filter_triggers:
