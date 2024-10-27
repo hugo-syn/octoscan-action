@@ -53,8 +53,12 @@ echo "Octoscan command: $OCTOSCAN_COMMAND"
 # I use eval because I don't know how to manage arguments that have space in them like for reviewdogs: reviewdogs_flags='--diff="git diff HEAD^"'
 eval "$OCTOSCAN_COMMAND"
 
-echo "sarif_output=$SARIF_OUTPUT" >> $GITHUB_OUTPUT
-
 exit_code=$?
 
-exit $exit_code
+echo "sarif_output=$SARIF_OUTPUT" >> $GITHUB_OUTPUT
+
+if [ "${INPUT_FAIL_ON_ERROR}" == "true" ]; then
+    exit $exit_code
+else
+    exit 0
+fi
