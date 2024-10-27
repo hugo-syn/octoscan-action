@@ -20,8 +20,6 @@ RUN set -x; \
   rm -rf "shellcheck-${SHELLCHEK_VERSION}"; \
   ls -laF /bin/shellcheck
 
-RUN wget -O - -q https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh| sh -s -- -b /usr/local/bin/ ${REVIEWDOG_VERSION}
-
 COPY install-octoscan.sh /install-octoscan.sh
 
 RUN sh /install-octoscan.sh && rm /install-octoscan.sh
