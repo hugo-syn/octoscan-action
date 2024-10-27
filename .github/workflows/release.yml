@@ -1,56 +1,95 @@
-name: release
+---
+# stolen from https://github.com/laluka/bypass-url-parser/blob/main/.github/workflows/release.yml thx @laluka <3
+name: GitHub release
+
 on:
-  push:
-    branches:
-      - master
-    tags:
-      - "v*.*.*"
-  pull_request:
-    types:
-      - labeled
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "The version to tag, without the leading 'v'. If omitted, will initiate a dry run (no uploads)."
+        type: string
+      sha:
+        description: "The full sha of the commit to be released. If omitted, the latest commit on the default branch will be used."
+        default: ""
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  release:
-    if: github.event.action != 'labeled'
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      # Bump version on merging Pull Requests with specific labels.
-      # (bump:major,bump:minor,bump:patch)
-      - id: bumpr
-        if: "!startsWith(github.ref, 'refs/tags/')"
-        uses: haya14busa/action-bumpr@v1
-
-      # Update corresponding major and minor tag.
-      # e.g. Update v1 and v1.2 when releasing v1.2.3
-      - uses: haya14busa/action-update-semver@v1
-        if: "!steps.bumpr.outputs.skip"
         with:
-          tag: ${{ steps.bumpr.outputs.next_version }}
+          ref: ${{ inputs.sha }}
 
-      # Get tag name.
-      - id: tag
-        uses: haya14busa/action-cond@v1
-        with:
-          cond: "${{ startsWith(github.ref, 'refs/tags/') }}"
-          if_true: ${{ github.ref }}
-          if_false: ${{ steps.bumpr.outputs.next_version }}
-
-      # Create release
-      - if: "steps.tag.outputs.value != ''"
-        env:
-          TAG_NAME: ${{ steps.tag.outputs.value }}
-          BODY: ${{ steps.bumpr.outputs.message }}
-          # This token is provided by Actions, you do not need to create your own token
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set local tag for version
+        if: ${{ inputs.tag }}
         run: |
-          gh release create "${TAG_NAME}" -t "Release ${TAG_NAME/refs\/tags\//}" --notes "${BODY}"
+          # Set to Github Actor
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git config user.name "${{ github.actor }} (GitHub Actions)"
+          git tag -m "v${{ inputs.tag }}" "v${{ inputs.tag }}"
 
-  release-check:
-    if: github.event.action == 'labeled'
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag ${{ github.repository }}:$(date +%s)
+
+  validate-tag:
+    name: Validate tag
     runs-on: ubuntu-latest
+    # If you don't set an input tag, it's a dry run (no uploads).
+    if: ${{ inputs.tag }}
     steps:
       - uses: actions/checkout@v4
-      - name: Post bumpr status comment
-        uses: haya14busa/action-bumpr@v1
+        with:
+          ref: master # We checkout the master branch to check for the commit
+      - name: Check master branch
+        if: ${{ inputs.sha }}
+        run: |
+          # Fetch the master branch since a shallow checkout is used by default
+          git fetch origin master --unshallow
+          if ! git branch --contains ${{ inputs.sha }} | grep -E '(^|\s)master$'; then
+            echo "The specified sha is not on the master branch" >&2
+            exit 1
+          fi
+
+  tag-release:
+    name: Tag release
+    runs-on: ubuntu-latest
+    needs: build
+    # If you don't set an input tag, it's a dry run (no uploads).
+    if: ${{ inputs.tag }}
+    permissions:
+      # For git tag
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.sha }}
+      - name: git tag
+        run: |
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git config user.name "${{ github.actor }} (GitHub Actions)"
+          git tag -m "v${{ inputs.tag }}" "v${{ inputs.tag }}"
+          # If there is duplicate tag, this will fail. The publish to pypi action will have been a noop (due to skip
+          # existing), so we make a non-destructive exit here
+          git push --tags
+
+  publish-release:
+    name: Publish to GitHub
+    runs-on: ubuntu-latest
+    needs: tag-release
+    # If you don't set an input tag, it's a dry run (no uploads).
+    if: ${{ inputs.tag }}
+    permissions:
+      # For GitHub release publishing
+      contents: write
+    steps:
+      - name: "Publish to GitHub"
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          tag_name: v${{ inputs.tag }}
