@@ -46,23 +46,10 @@ fi
 
 OCTOSCAN_COMMAND="$OCTOSCAN_COMMAND > $SARIF_OUTPUT"
 
-echo "bla"
-
 # Print the constructed command for debugging
 echo "Octoscan command: $OCTOSCAN_COMMAND"
 
 # Execute the commands
-eval "$OCTOSCAN_COMMAND"
-
-exit_code=$?
-
-echo "$exit_code"
+eval "$OCTOSCAN_COMMAND" || true
 
 echo "sarif_output=$SARIF_OUTPUT" >> $GITHUB_OUTPUT
-
-if [ "${INPUT_FAIL_ON_ERROR}" == "true" ]; then
-    echo "dddd"
-    exit $exit_code
-else
-    exit 0
-fi
