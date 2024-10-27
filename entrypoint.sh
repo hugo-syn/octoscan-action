@@ -55,9 +55,12 @@ eval "$OCTOSCAN_COMMAND"
 
 exit_code=$?
 
+echo "$exit_code"
+
 echo "sarif_output=$SARIF_OUTPUT" >> $GITHUB_OUTPUT
 
 if [ "${INPUT_FAIL_ON_ERROR}" == "true" ]; then
+    echo "dddd"
     exit $exit_code
 else
     exit 0
