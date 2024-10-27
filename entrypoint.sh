@@ -6,7 +6,7 @@ if [ -n "${GITHUB_WORKSPACE}" ] ; then
   git config --global --add safe.directory "${GITHUB_WORKSPACE}" || exit 1
 fi
 
-export REVIEWDOG_GITHUB_API_TOKEN="${INPUT_GITHUB_TOKEN}"
+SARIF_OUTPUT="octoscan.sarif"
 
 # Initialize the base command
 OCTOSCAN_COMMAND="octoscan scan ."
@@ -44,15 +44,16 @@ if [ -n "$INPUT_CONFIG_FILE" ]; then
     OCTOSCAN_COMMAND="$OCTOSCAN_COMMAND --config-file \"$INPUT_CONFIG_FILE\""
 fi
 
-REVIEWDOG_COMMAND="reviewdog -efm=\"%f:%l:%c: %m\" -name=\"octoscan\" -reporter=${INPUT_REPORTER} -filter-mode=${INPUT_FILTER_MODE} -fail-on-error=${INPUT_FAIL_ON_ERROR} -level=${INPUT_LEVEL} ${INPUT_REVIEWDOG_FLAGS}"
+OCTOSCAN_COMMAND="$OCTOSCAN_COMMAND > $SARIF_OUTPUT
 
 # Print the constructed command for debugging
 echo "Octoscan command: $OCTOSCAN_COMMAND"
-echo "Reviewdog command: $REVIEWDOG_COMMAND"
 
 # Execute the commands
 # I use eval because I don't know how to manage arguments that have space in them like for reviewdogs: reviewdogs_flags='--diff="git diff HEAD^"'
-eval "$OCTOSCAN_COMMAND" | eval "$REVIEWDOG_COMMAND"
+eval "$OCTOSCAN_COMMAND"
+
+echo "sarif_output=$SARIF_OUTPUT" >> $GITHUB_OUTPUT
 
 exit_code=$?
 
