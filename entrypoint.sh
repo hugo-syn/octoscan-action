@@ -44,7 +44,7 @@ if [ -n "$INPUT_CONFIG_FILE" ]; then
     OCTOSCAN_COMMAND="$OCTOSCAN_COMMAND --config-file \"$INPUT_CONFIG_FILE\""
 fi
 
-OCTOSCAN_COMMAND="$OCTOSCAN_COMMAND > $SARIF_OUTPUT
+OCTOSCAN_COMMAND="$OCTOSCAN_COMMAND > $SARIF_OUTPUT"
 
 # Print the constructed command for debugging
 echo "Octoscan command: $OCTOSCAN_COMMAND"
