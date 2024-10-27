@@ -9,7 +9,7 @@ fi
 SARIF_OUTPUT="octoscan.sarif"
 
 # Initialize the base command
-OCTOSCAN_COMMAND="octoscan scan ."
+OCTOSCAN_COMMAND="octoscan scan . --format sarif"
 
 # Add options if the corresponding environment variables are defined
 if [ -n "$INPUT_DEBUG_RULES" ]; then
