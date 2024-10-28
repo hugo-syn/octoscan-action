@@ -72,6 +72,13 @@ jobs:
           category: octoscan
 ```
 
+Security results can the be reviewed in the code security tab if you have write access on the target repository:
+![code security](img/action-octoscan2.png)
+
+Or directly in the pull request:
+![code security](img/action-octoscan.png)
+
+
 ## Customizing
 
 ### inputs
