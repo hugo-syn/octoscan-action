@@ -7,7 +7,7 @@
 </h1>
 
 <p align="center">
-   A GitHub Action that performs a security scan of your GitHub action.
+   A GitHub Action that performs a security scan of your GitHub actions.
 </p>
 
 <p align="center">
