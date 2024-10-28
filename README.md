@@ -1,6 +1,7 @@
-<div align="center">
+<div align="center" style="font-size: 48px;">
   📦 :octocat:
 </div>
+
 <h1 align="center">
   action octoscan
 </h1>
