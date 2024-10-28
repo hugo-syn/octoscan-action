@@ -1,115 +1,116 @@
-# action-template
+<div align="center">
+  📦 :octocat:
+</div>
+<h1 align="center">
+  action octoscan
+</h1>
 
-<!-- TODO: replace reviewdog/action-template with your repo name -->
-[![Test](https://github.com/reviewdog/action-template/workflows/Test/badge.svg)](https://github.com/reviewdog/action-template/actions?query=workflow%3ATest)
-[![reviewdog](https://github.com/reviewdog/action-template/workflows/reviewdog/badge.svg)](https://github.com/reviewdog/action-template/actions?query=workflow%3Areviewdog)
-[![depup](https://github.com/reviewdog/action-template/workflows/depup/badge.svg)](https://github.com/reviewdog/action-template/actions?query=workflow%3Adepup)
-[![release](https://github.com/reviewdog/action-template/workflows/release/badge.svg)](https://github.com/reviewdog/action-template/actions?query=workflow%3Arelease)
-[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/reviewdog/action-template?logo=github&sort=semver)](https://github.com/reviewdog/action-template/releases)
-[![action-bumpr supported](https://img.shields.io/badge/bumpr-supported-ff69b4?logo=github&link=https://github.com/haya14busa/action-bumpr)](https://github.com/haya14busa/action-bumpr)
+<p align="center">
+   A GitHub Action that performs a security scan of your GitHub action.
+</p>
 
-![github-pr-review demo](https://user-images.githubusercontent.com/3797062/73162963-4b8e2b00-4132-11ea-9a3f-f9c6f624c79f.png)
-![github-pr-check demo](https://user-images.githubusercontent.com/3797062/73163032-70829e00-4132-11ea-8481-f213a37db354.png)
+<p align="center">
+   This action is based on <a href="https://github.com/synacktiv/octoscan">octoscan</a>
+</p>
 
-This is a template repository for [reviewdog](https://github.com/reviewdog/reviewdog) action with release automation.
-Click `Use this template` button to create your reviewdog action :dog:!
+<div align="center">
+  <img src="demo.png"/>
+</div>
 
-If you want to create your own reviewdog action from scratch without using this
-template, please check and copy release automation flow.
-It's important to manage release workflow and sync reviewdog version for all
-reviewdog actions.
+<div align="center">
+  <a href="https://github.com/softprops/action-gh-release/actions">
+		<img src="https://github.com/softprops/action-gh-release/workflows/Main/badge.svg"/>
+	</a>
+</div>
 
-This repo contains a sample action to run [misspell](https://github.com/client9/misspell).
+<br />
 
-## Input
+- [🤸 Usage](#-usage)
+- [Customizing](#-customizing)
+  - [inputs](#inputs)
+  - [outputs](#outputs)
+- [Permissions](#permissions)
 
-<!-- TODO: update -->
-```yaml
-inputs:
-  github_token:
-    description: 'GITHUB_TOKEN'
-    default: '${{ github.token }}'
-  workdir:
-    description: 'Working directory relative to the root directory.'
-    default: '.'
-  ### Flags for reviewdog ###
-  level:
-    description: 'Report level for reviewdog [info,warning,error]'
-    default: 'error'
-  reporter:
-    description: 'Reporter of reviewdog command [github-pr-check,github-check,github-pr-review].'
-    default: 'github-pr-check'
-  filter_mode:
-    description: |
-      Filtering mode for the reviewdog command [added,diff_context,file,nofilter].
-      Default is added.
-    default: 'added'
-  fail_on_error:
-    description: |
-      Exit code for reviewdog when errors are found [true,false]
-      Default is `false`.
-    default: 'false'
-  reviewdog_flags:
-    description: 'Additional reviewdog flags'
-    default: ''
-  ### Flags for <linter-name> ###
-  locale:
-    description: '-locale flag of misspell. (US/UK)'
-    default: ''
-```
+## 🤸 Usage
 
-## Usage
-<!-- TODO: update. replace `template` with the linter name -->
+Here is a basic example of how to use this action. This will work for both `push` and `pull_request` events.
 
 ```yaml
-name: reviewdog
-on: [pull_request]
+---
+name: Octoscan
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/*'
+  push:
+    paths:
+      - '.github/workflows/*'
+
+permissions:
+  security-events: write
+  actions: read
+  contents: read
+
 jobs:
-  # TODO: change `linter_name`.
-  linter_name:
-    name: runner / <linter-name>
+  octoscan:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: reviewdog/action-template@v1
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - id: octoscan
+        name: Run octoscan
+        uses: hugo-syn/octoscan-action@v1
+
+      - name: Upload SARIF file to GitHub
+        uses: github/codeql-action/upload-sarif@v3
         with:
-          github_token: ${{ secrets.github_token }}
-          # Change reviewdog reporter if you need [github-pr-check,github-check,github-pr-review].
-          reporter: github-pr-review
-          # Change reporter level if you need.
-          # GitHub Status Check won't become failure with warning.
-          level: warning
+          sarif_file: "${{steps.octoscan.outputs.sarif_output}}"
+          category: octoscan
 ```
 
-## Development
+## Customizing
 
-### Release
+### inputs
 
-#### [haya14busa/action-bumpr](https://github.com/haya14busa/action-bumpr)
-You can bump version on merging Pull Requests with specific labels (bump:major,bump:minor,bump:patch).
-Pushing tag manually by yourself also work.
+Inputs are based on the options of `octoscan`, you can find them [here](https://github.com/synacktiv/octoscan?tab=readme-ov-file#analyze).
 
-#### [haya14busa/action-update-semver](https://github.com/haya14busa/action-update-semver)
+The following are optional as `step.with` keys:
 
-This action updates major/minor release tags on a tag push. e.g. Update v1 and v1.2 tag when released v1.2.3.
-ref: https://help.github.com/en/articles/about-actions#versioning-your-action
+| Name                       | Type    | Description                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| -------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `workdir`                     | String  | Working directory relative to the root directory.                                                                                                                                                                                                                                                                                                                                                                                              |
+| `filter_triggers`                | String  | Scan workflows with specific triggers (comma separated list: "push,pull_request_target" or pre-configured: external/allnopr). Default is `external`.                                                                                                                                                                                                                                                                                                                                                                                 |
+| `filter_run`                    | Boolean | Search for expression injection only in run shell scripts. Default is `true`                                                                                                                                                                                                                                                                                                                                                                                             |
+| `ignore`               | String | Regular expression matching to error messages you want to ignore.                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `disable_rules`                    | String  | Disable specific rules. Split on ",". Can't be used with `enable_rules`.                                                                                                                                                                                                                                                                                                                                                                                |
+| `enable_rules`                     | String  | Enable specific rules, this will disable all other rules. Split on ",". Can't be used with `disable_rules`.                                                                                                                                                                                                                                                                                                                                                                                  |
 
-### Lint - reviewdog integration
+💡 It's not possible to use `enable_rules`  and `disable_rules` at the same time.
 
-This reviewdog action template itself is integrated with reviewdog to run lints
-which is useful for Docker container based actions.
+### outputs
 
-![reviewdog integration](https://user-images.githubusercontent.com/3797062/72735107-7fbb9600-3bde-11ea-8087-12af76e7ee6f.png)
+The following outputs can be accessed via `${{ steps.<step-id>.outputs }}` from this action
 
-Supported linters:
+| Name         | Type   | Description                                                                                                                                                                               |
+| ------------ | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sarif_output`        | String | The name of the file containing the sarif output.                                                                                                                                                          |
 
-- [reviewdog/action-shellcheck](https://github.com/reviewdog/action-shellcheck)
-- [reviewdog/action-hadolint](https://github.com/reviewdog/action-hadolint)
-- [reviewdog/action-misspell](https://github.com/reviewdog/action-misspell)
 
-### Dependencies Update Automation
-This repository uses [reviewdog/action-depup](https://github.com/reviewdog/action-depup) to update
-reviewdog version.
+### Permissions
 
-[![reviewdog depup demo](https://user-images.githubusercontent.com/3797062/73154254-170e7500-411a-11ea-8211-912e9de7c936.png)](https://github.com/reviewdog/action-template/pull/6)
+This Action requires the following permissions on the GitHub integration token:
+
+```yaml
+permissions:
+  security-events: write
+  actions: read
+  contents: read
+```
+
+`security-events` is used to push the output of octoscan to GitHib code scanning.
+
+
 
