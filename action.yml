@@ -5,11 +5,6 @@ inputs:
   workdir:
     description: 'Working directory relative to the root directory.'
     default: '.'
-  fail_on_error:
-    description: |
-      Exit code for reviewdog when errors are found [true,false]
-      Default is `false`.
-    default: 'false'
 
   ### Flags for octoscan ###
   filter_triggers:
