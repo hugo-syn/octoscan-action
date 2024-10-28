@@ -15,12 +15,12 @@
 </p>
 
 <div align="center">
-  <img src="demo.png"/>
+  <img src="action-octoscan.png"/>
 </div>
 
 <div align="center">
-  <a href="https://github.com/softprops/action-gh-release/actions">
-		<img src="https://github.com/softprops/action-gh-release/workflows/Main/badge.svg"/>
+  <a href="https://github.com/hugo-syn/octoscan-action/actions">
+		<img src="https://github.com/hugo-syn/octoscan-action/actions/workflows/dockerimage/badge.svg"/>
 	</a>
 </div>
 
