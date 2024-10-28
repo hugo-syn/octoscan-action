@@ -3,7 +3,13 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - README.md
+      - .github/workflows/*
   pull_request:
+    paths-ignore:
+      - README.md
+      - .github/workflows/*
 jobs:
   build:
     runs-on: ubuntu-latest
