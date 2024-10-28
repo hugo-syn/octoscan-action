@@ -110,7 +110,4 @@ permissions:
   contents: read
 ```
 
-`security-events` is used to push the output of octoscan to GitHib code scanning.
-
-
-
+`security-events` is used to push the output of octoscan to GitHub code scanning.
