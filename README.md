@@ -15,12 +15,12 @@
 </p>
 
 <div align="center">
-  <img src="action-octoscan.png"/>
+  <img src="img/action-octoscan.png"/>
 </div>
 
 <div align="center">
   <a href="https://github.com/hugo-syn/octoscan-action/actions">
-		<img src="https://github.com/hugo-syn/octoscan-action/actions/workflows/dockerimage/badge.svg"/>
+		<img src="https://github.com/hugo-syn/octoscan-action/actions/workflows/dockerimage.yml/badge.svg"/>
 	</a>
 </div>
 
