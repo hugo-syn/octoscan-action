@@ -1,4 +1,4 @@
-FROM ghcr.io/0x41gilecat/octoscan:latest
+FROM ghcr.io/synacktiv/octoscan:latest
 
 COPY entrypoint.sh /entrypoint.sh
 
