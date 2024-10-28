@@ -8,6 +8,12 @@ on:
       tag:
         description: "The version to tag, without the leading 'v'. If omitted, will initiate a dry run (no uploads)."
         type: string
+      major_version:
+        type: choice
+        description: The major version to update
+        options:
+          - v1
+        default: "v1"
       sha:
         description: "The full sha of the commit to be released. If omitted, the latest commit on the default branch will be used."
         default: ""
@@ -33,6 +39,7 @@ jobs:
           git config user.email "${{ github.actor }}@users.noreply.github.com"
           git config user.name "${{ github.actor }} (GitHub Actions)"
           git tag -m "v${{ inputs.tag }}" "v${{ inputs.tag }}"
+          git tag -f -m ${{ inputs.major_version }} ${{ inputs.major_version }}
 
       - name: Build the Docker image
         run: docker build . --file Dockerfile --tag ${{ github.repository }}:$(date +%s)
@@ -74,8 +81,7 @@ jobs:
           git config user.email "${{ github.actor }}@users.noreply.github.com"
           git config user.name "${{ github.actor }} (GitHub Actions)"
           git tag -m "v${{ inputs.tag }}" "v${{ inputs.tag }}"
-          # If there is duplicate tag, this will fail. The publish to pypi action will have been a noop (due to skip
-          # existing), so we make a non-destructive exit here
+          git tag -f -m ${{ inputs.major_version }} ${{ inputs.major_version }}
           git push --tags
 
   publish-release:
